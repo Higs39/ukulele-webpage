@@ -61,7 +61,7 @@
     const title = songKey.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
     document.getElementById("songTitle").textContent = title;
 
-    fetch(`Songs/${songKey}.txt`)
+    fetch(`${songKey}.txt`)
       .then(res => res.text())
       .then(text => {
         document.getElementById("chordDisplay").textContent = text;

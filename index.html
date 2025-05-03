@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Ukulele Chords</title>
   <style>
-    body { font-family: sans-serif; line-height: 1.8; padding: 20px; }
+    body { font-family: sans-serif; line-height: 1.8; padding: 20px; margin: 0; }
     #controls {
       position: fixed;
       top: 10px;
@@ -13,6 +13,15 @@
       border: 1px solid #ccc;
       padding: 10px;
       z-index: 1000;
+    }
+    #scrollContainer {
+      position: absolute;
+      top: 100px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      padding: 20px;
     }
   </style>
 </head>
@@ -42,11 +51,14 @@
   </label>
 </div>
 
-<h1 id="songTitle">Ukulele Chords</h1>
-<pre id="chordDisplay">Loading...</pre>
+<div id="scrollContainer">
+  <h1 id="songTitle">Ukulele Chords</h1>
+  <pre id="chordDisplay">Loading...</pre>
+</div>
 
 <script>
   let scrollInterval = null;
+  const scrollContainer = document.getElementById("scrollContainer");
 
   function toggleScroll() {
     if (scrollInterval) {
@@ -55,7 +67,7 @@
     } else {
       const speed = document.getElementById("speedSelect").value;
       scrollInterval = setInterval(() => {
-        window.scrollBy(0, 1);
+        scrollContainer.scrollBy(0, 1);
       }, 1000 / speed);
     }
   }
@@ -76,7 +88,7 @@
       .then(res => res.text())
       .then(text => {
         document.getElementById("chordDisplay").textContent = text;
-        window.scrollTo(0, 0);
+        scrollContainer.scrollTop = 0;
       })
       .catch(err => {
         document.getElementById("chordDisplay").textContent = "Failed to load song.";

@@ -21,7 +21,18 @@
 <div id="controls">
   <button onclick="toggleScroll()">Start/Stop</button>
   <label>Speed (1–10): 
-    <input type="number" id="speedInput" min="1" max="10" value="5">
+    <select id="speedSelect">
+      <option value="1">1 (Slowest)</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5" selected>5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10 (Fastest)</option>
+    </select>
   </label>
   <label>Song:
     <select id="songSelect" onchange="loadSong()">
@@ -42,14 +53,14 @@
       clearInterval(scrollInterval);
       scrollInterval = null;
     } else {
-      const speed = document.getElementById("speedInput").value;
+      const speed = document.getElementById("speedSelect").value;
       scrollInterval = setInterval(() => {
         window.scrollBy(0, 1);
       }, 1000 / speed);
     }
   }
 
-  document.getElementById("speedInput").addEventListener("input", () => {
+  document.getElementById("speedSelect").addEventListener("change", () => {
     if (scrollInterval) {
       toggleScroll();
       toggleScroll();

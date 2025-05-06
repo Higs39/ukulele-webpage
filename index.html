@@ -19,19 +19,25 @@
       border: 1px solid #ccc;
       padding: 10px;
       z-index: 1000;
+      max-width: 300px;
     }
 
-    #chordDisplay {
+    pre {
       font-size: 1.4em;
       white-space: pre-wrap;
-      margin-top: 80px;
+      margin-top: 180px;
     }
 
     textarea {
       width: 100%;
-      height: 150px;
+      height: 100px;
       font-size: 1em;
       margin-top: 10px;
+    }
+
+    select, input, button {
+      margin-top: 5px;
+      width: 100%;
     }
   </style>
 </head>
@@ -39,7 +45,7 @@
 
 <div id="controls">
   <button onclick="toggleScroll()">Start/Stop</button>
-  <label>Speed (1–10): 
+  <label>Speed:
     <select id="speedSelect">
       <option value="1">1 (Slowest)</option>
       <option value="2">2</option>
@@ -53,14 +59,21 @@
       <option value="10">10 (Fastest)</option>
     </select>
   </label>
-  <br><br>
+
   <input type="file" id="fileInput" accept=".txt">
-  <button onclick="loadPastedText()">Use Pasted Text</button>
+  <textarea id="textInput" placeholder="Paste your song here..."></textarea>
+  <input type="text" id="songName" placeholder="Name this song">
+  <button onclick="saveSong()">💾 Save Song</button>
+
+  <label>Saved Songs:
+    <select id="savedSongs" onchange="loadSavedSong()">
+      <option value="">-- Select Song --</option>
+    </select>
+  </label>
+  <button onclick="deleteSong()">🗑️ Delete Selected Song</button>
 </div>
 
-<textarea id="textInput" placeholder="Paste plain text chords here..."></textarea>
-
-<pre id="chordDisplay">Upload or paste a song to begin.</pre>
+<pre id="chordDisplay">Upload, paste, or select a song to begin.</pre>
 
 <script>
   let scrollInterval = null;
@@ -90,17 +103,61 @@
 
     const reader = new FileReader();
     reader.onload = (e) => {
+      document.getElementById("textInput").value = e.target.result;
       document.getElementById("chordDisplay").textContent = e.target.result;
       window.scrollTo(0, 0);
     };
     reader.readAsText(file);
   });
 
-  function loadPastedText() {
-    const text = document.getElementById("textInput").value;
-    document.getElementById("chordDisplay").textContent = text || "No text pasted.";
+  function saveSong() {
+    const name = document.getElementById("songName").value.trim();
+    const content = document.getElementById("textInput").value;
+    if (!name || !content) {
+      alert("Please enter a name and paste or load text.");
+      return;
+    }
+
+    localStorage.setItem("song_" + name, content);
+    updateSavedSongs();
+    alert("Saved!");
+  }
+
+  function updateSavedSongs() {
+    const select = document.getElementById("savedSongs");
+    select.innerHTML = `<option value="">-- Select Song --</option>`;
+    for (let key in localStorage) {
+      if (key.startsWith("song_")) {
+        const name = key.replace("song_", "");
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+      }
+    }
+  }
+
+  function loadSavedSong() {
+    const name = document.getElementById("savedSongs").value;
+    if (!name) return;
+    const content = localStorage.getItem("song_" + name);
+    document.getElementById("textInput").value = content;
+    document.getElementById("chordDisplay").textContent = content;
     window.scrollTo(0, 0);
   }
+
+  function deleteSong() {
+    const name = document.getElementById("savedSongs").value;
+    if (!name) return;
+    if (confirm(`Delete "${name}"?`)) {
+      localStorage.removeItem("song_" + name);
+      updateSavedSongs();
+      document.getElementById("textInput").value = "";
+      document.getElementById("chordDisplay").textContent = "";
+    }
+  }
+
+  window.onload = updateSavedSongs;
 </script>
 
 </body>

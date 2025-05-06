@@ -12,9 +12,25 @@
     }
 
     #controls {
+      position: absolute;
+      top: 20px;
+      left: 20px;
       background: #f9f9f9;
-      border-bottom: 1px solid #ccc;
-      padding: 15px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 300px;
+      resize: both;
+      overflow: auto;
+      z-index: 1000;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    }
+
+    #controlsHeader {
+      cursor: move;
+      font-weight: bold;
+      margin-bottom: 10px;
+      background: #ddd;
+      padding: 5px;
     }
 
     pre {
@@ -27,7 +43,6 @@
       width: 100%;
       height: 100px;
       font-size: 1em;
-      margin-top: 10px;
     }
 
     select, input, button {
@@ -49,7 +64,9 @@
 </head>
 <body>
 
-<div id="controls" class="section">
+<div id="controls">
+  <div id="controlsHeader">🎛 Controls</div>
+
   <button onclick="toggleScroll()">Start/Stop</button>
   <label>Speed (1–10):
     <select id="speedSelect">
@@ -175,6 +192,39 @@
   }
 
   window.onload = updateSavedSongs;
+
+  // Make controls draggable
+  dragElement(document.getElementById("controls"));
+
+  function dragElement(elmnt) {
+    const header = document.getElementById("controlsHeader");
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    header.onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) {
+      e.preventDefault();
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+  }
 </script>
 
 </body>

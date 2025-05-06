@@ -7,8 +7,8 @@
     body {
       font-family: sans-serif;
       line-height: 1.8;
-      padding: 20px;
       margin: 0;
+      padding: 20px;
     }
 
     #controls {
@@ -21,9 +21,17 @@
       z-index: 1000;
     }
 
-    pre {
+    #chordDisplay {
       font-size: 1.4em;
       white-space: pre-wrap;
+      margin-top: 80px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-size: 1em;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -45,19 +53,14 @@
       <option value="10">10 (Fastest)</option>
     </select>
   </label>
- <select id="songSelect" onchange="loadSong()">
-  <option value="saajna">Saajna</option>
-  <option value="woh_lamhey">Woh Lamhey</option>
-  <option value="taare_zameen_par">Taare Zameen Par</option>
-  <option value="maa">Maa</option>
-  <option value="baarishein">Baarishein</option>
-  <option value="tere_sang_yara">Tere Sang Yara</option>
-</select>
-
+  <br><br>
+  <input type="file" id="fileInput" accept=".txt">
+  <button onclick="loadPastedText()">Use Pasted Text</button>
 </div>
 
-<h1 id="songTitle">Ukulele Chords</h1>
-<pre id="chordDisplay">Loading...</pre>
+<textarea id="textInput" placeholder="Paste plain text chords here..."></textarea>
+
+<pre id="chordDisplay">Upload or paste a song to begin.</pre>
 
 <script>
   let scrollInterval = null;
@@ -81,24 +84,23 @@
     }
   });
 
-  function loadSong() {
-    const songKey = document.getElementById("songSelect").value;
-    const title = songKey.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-    document.getElementById("songTitle").textContent = title;
+  document.getElementById("fileInput").addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-    fetch(`${songKey}.txt`)
-      .then(res => res.text())
-      .then(text => {
-        document.getElementById("chordDisplay").textContent = text;
-        window.scrollTo(0, 0);
-      })
-      .catch(err => {
-        document.getElementById("chordDisplay").textContent = "Failed to load song.";
-        console.error(err);
-      });
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById("chordDisplay").textContent = e.target.result;
+      window.scrollTo(0, 0);
+    };
+    reader.readAsText(file);
+  });
+
+  function loadPastedText() {
+    const text = document.getElementById("textInput").value;
+    document.getElementById("chordDisplay").textContent = text || "No text pasted.";
+    window.scrollTo(0, 0);
   }
-
-  window.onload = loadSong;
 </script>
 
 </body>

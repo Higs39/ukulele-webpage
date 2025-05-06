@@ -8,24 +8,19 @@
       font-family: sans-serif;
       line-height: 1.8;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
 
     #controls {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: white;
-      border: 1px solid #ccc;
-      padding: 10px;
-      z-index: 1000;
-      max-width: 300px;
+      background: #f9f9f9;
+      border-bottom: 1px solid #ccc;
+      padding: 15px;
     }
 
     pre {
       font-size: 1.4em;
       white-space: pre-wrap;
-      margin-top: 220px;
+      padding: 20px;
     }
 
     textarea {
@@ -45,11 +40,16 @@
       display: block;
       margin-top: 10px;
     }
+
+    .section {
+      max-width: 600px;
+      margin: auto;
+    }
   </style>
 </head>
 <body>
 
-<div id="controls">
+<div id="controls" class="section">
   <button onclick="toggleScroll()">Start/Stop</button>
   <label>Speed (1–10):
     <select id="speedSelect">
@@ -89,7 +89,7 @@
   <button onclick="deleteSong()">🗑️ Delete Selected Song</button>
 </div>
 
-<pre id="chordDisplay">Upload, paste, or select a song to begin.</pre>
+<pre id="chordDisplay" class="section">Upload, paste, or select a song to begin.</pre>
 
 <script>
   let scrollInterval = null;

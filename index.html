@@ -25,7 +25,7 @@
     pre {
       font-size: 1.4em;
       white-space: pre-wrap;
-      margin-top: 180px;
+      margin-top: 220px;
     }
 
     textarea {
@@ -36,8 +36,14 @@
     }
 
     select, input, button {
-      margin-top: 5px;
+      font-size: 1em;
+      margin-top: 8px;
       width: 100%;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -45,7 +51,7 @@
 
 <div id="controls">
   <button onclick="toggleScroll()">Start/Stop</button>
-  <label>Speed:
+  <label>Speed (1–10):
     <select id="speedSelect">
       <option value="1">1 (Slowest)</option>
       <option value="2">2</option>
@@ -60,16 +66,26 @@
     </select>
   </label>
 
-  <input type="file" id="fileInput" accept=".txt">
-  <textarea id="textInput" placeholder="Paste your song here..."></textarea>
-  <input type="text" id="songName" placeholder="Name this song">
+  <label>
+    Upload .txt file:
+    <input type="file" id="fileInput" accept=".txt">
+  </label>
+
+  <label>
+    Paste text:
+    <textarea id="textInput" placeholder="Paste your song here..."></textarea>
+  </label>
+
+  <input type="text" id="songName" placeholder="Name this song to save">
   <button onclick="saveSong()">💾 Save Song</button>
 
-  <label>Saved Songs:
+  <label>
+    Saved Songs:
     <select id="savedSongs" onchange="loadSavedSong()">
       <option value="">-- Select Song --</option>
     </select>
   </label>
+
   <button onclick="deleteSong()">🗑️ Delete Selected Song</button>
 </div>
 
@@ -103,8 +119,9 @@
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      document.getElementById("textInput").value = e.target.result;
-      document.getElementById("chordDisplay").textContent = e.target.result;
+      const content = e.target.result;
+      document.getElementById("textInput").value = content;
+      document.getElementById("chordDisplay").textContent = content;
       window.scrollTo(0, 0);
     };
     reader.readAsText(file);
@@ -120,7 +137,7 @@
 
     localStorage.setItem("song_" + name, content);
     updateSavedSongs();
-    alert("Saved!");
+    alert(`Saved as "${name}"`);
   }
 
   function updateSavedSongs() {
